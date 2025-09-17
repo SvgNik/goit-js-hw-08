@@ -64,11 +64,12 @@ const images = [
   },
 ];
 
-const gallery = document.querySelector(".gallery");
+const galleryContainer = document.querySelector(".gallery");
 
-const markup = images
-  .map(({ preview, original, description }) => {
-    return `
+function createMarkup(arr) {
+  return arr
+    .map(({ preview, original, description }) => {
+      return `
       <li class="gallery-item">
         <a class="gallery-link" href="${original}">
           <img
@@ -80,39 +81,22 @@ const markup = images
         </a>
       </li>
     `;
-  })
-  .join("");
+    })
+    .join("");
+}
+galleryContainer.innerHTML = createMarkup(images);
 
-gallery.insertAdjacentHTML("beforeend", markup);
+galleryContainer.addEventListener("click", onClick);
 
-gallery.addEventListener("click", onGalleryClick);
+let imgRef = "";
 
-function onGalleryClick(evt) {
-  evt.preventDefault();
+function onClick(event) {
+  event.preventDefault();
+  imgRef = event.target.dataset.source;
 
-  const clickedImg = evt.target;
-  if (clickedImg.nodeName !== "IMG") return;
-
-  const largeImageURL = clickedImg.dataset.source;
-  if (!largeImageURL) return;
-
-  const instance = basicLightbox.create(
-    `<img src="${largeImageURL}" alt="${clickedImg.alt}" style="max-width:90vw; height:auto;">`,
-    {
-      onShow: (instance) => {
-        window.addEventListener("keydown", onEscClose);
-      },
-      onClose: (instance) => {
-        window.removeEventListener("keydown", onEscClose);
-      },
-    }
-  );
+  const instance = basicLightbox.create(`
+    <img src="${imgRef}" width="800" height="600">
+`);
 
   instance.show();
-
-  function onEscClose(e) {
-    if (e.key === "Escape") {
-      instance.close();
-    }
-  }
 }
