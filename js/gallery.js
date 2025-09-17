@@ -65,7 +65,6 @@ const images = [
 ];
 
 const galleryContainer = document.querySelector(".gallery");
-
 function createMarkup(arr) {
   return arr
     .map(({ preview, original, description }) => {
